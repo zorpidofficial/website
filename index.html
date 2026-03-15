@@ -182,19 +182,35 @@ nav {
   display: none; align-items: center; justify-content: center;
   background: none; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
   width: 36px; height: 36px; cursor: pointer; flex-shrink: 0; color: var(--text);
-  transition: all 0.2s;
+  transition: all 0.2s; position: relative;
 }
 .nav-menu-btn:hover { border-color: var(--primary); color: var(--primary); }
+/* Red dot on hamburger when cart has items (mobile) */
+.nav-menu-btn .menu-cart-dot {
+  position: absolute; top: -5px; right: -5px;
+  width: 14px; height: 14px; background: var(--accent2); color: white;
+  border-radius: 50%; font-size: 9px; font-weight: 700;
+  display: none; align-items: center; justify-content: center;
+  border: 1.5px solid white;
+}
+.nav-menu-btn .menu-cart-dot.visible { display: flex; }
 
 /* Mobile action drawer */
 .nav-mobile-actions {
-  display: none; position: absolute; top: var(--nav-h); left: 0; right: 0;
+  display: none; position: absolute; top: 100%; left: 0; right: 0;
   background: white; border-bottom: 1px solid var(--border);
-  padding: 12px var(--page-pad);
+  padding: 10px var(--page-pad) 14px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.10);
   flex-direction: row; gap: 8px; z-index: 999; flex-wrap: wrap;
 }
 .nav-mobile-actions.open { display: flex; }
+.mobile-drawer-cart { position: relative; }
+.mobile-drawer-cart .cart-count {
+  position: absolute; top: -6px; right: -6px;
+  background: var(--accent2); color: white; border-radius: 50%;
+  width: 18px; height: 18px; font-size: 10px; font-weight: 700;
+  display: none; align-items: center; justify-content: center;
+}
 
 /* ═══════════════════════════════════════════
    LOCATION BANNER
@@ -687,10 +703,14 @@ footer { background: var(--primary-dark); color: rgba(255,255,255,0.8); padding:
   /* Location text shorter */
   .location-text { max-width: 70px; font-size: 11px; }
 
+  /* Hero — fill viewport on tablet portrait */
+  .hero { height: calc(100svh - 60px); min-height: 480px; max-height: none; }
+  .slide-title { font-size: clamp(26px, 5vw, 44px); }
+
   /* Carousel */
-  .carousel-prev, .carousel-next { width: 36px; height: 36px; }
-  .carousel-prev { left: 8px; }
-  .carousel-next { right: 8px; }
+  .carousel-prev, .carousel-next { width: 40px; height: 40px; }
+  .carousel-prev { left: 12px; }
+  .carousel-next { right: 12px; }
 
   /* Cats */
   .cats-grid { grid-template-columns: 1fr; }
@@ -708,25 +728,24 @@ footer { background: var(--primary-dark); color: rgba(255,255,255,0.8); padding:
 @media (max-width: 600px) {
   :root { --nav-h: 56px; }
 
-  /* Nav: stack search below on small phones or keep inline on 600px */
+  /* Nav: stack search below */
   .nav-inner { flex-wrap: wrap; padding: 8px 14px; height: auto; min-height: var(--nav-h); row-gap: 8px; }
   nav { height: auto; }
   .nav-logo { order: 1; }
   .nav-location { order: 2; margin-left: auto; }
   .nav-menu-btn { order: 3; }
   .nav-search { order: 4; width: 100%; flex: none; }
-  .nav-actions { display: none; } /* Hidden, in mobile drawer */
+  .nav-actions { display: none; }
 
-  /* Hero */
-  .hero { height: clamp(260px, 55vw, 380px); }
-  .slide-title { font-size: clamp(22px, 6vw, 32px); }
+  /* Hero — tall on mobile, fills most of the viewport */
+  .hero { height: calc(100svh - 108px); min-height: 420px; max-height: none; }
 
   /* Features: 2 col */
   .features-grid { grid-template-columns: repeat(2,1fr); gap: 12px; }
   .feature-icon { width: 38px; height: 38px; min-width: 38px; font-size: 16px; }
   .feature-item h4 { font-size: 12px; }
 
-  /* Tests grid: single col on very small */
+  /* Tests grid: 2 col */
   .tests-grid { grid-template-columns: 1fr 1fr; }
 
   /* Cart panel full width */
@@ -739,10 +758,17 @@ footer { background: var(--primary-dark); color: rgba(255,255,255,0.8); padding:
 
 /* ── PHONE (≤ 480px) ── */
 @media (max-width: 480px) {
+  /* Hero — full viewport height minus nav on phone */
+  .hero { height: calc(100svh - 108px); min-height: 400px; }
+  .slide-title { font-size: clamp(26px, 7.5vw, 38px); }
+  .slide-subtitle { font-size: 14px; }
+  .slide-badge { font-size: 10px; padding: 4px 10px; }
+  .slide-cta { padding: 11px 20px; font-size: 14px; }
+
   /* Tests: single column */
   .tests-grid { grid-template-columns: 1fr; }
 
-  /* Why grid: single column */
+  /* Why grid: 2 col */
   .why-grid { grid-template-columns: 1fr 1fr; }
 
   /* Float buttons: smaller */
@@ -752,9 +778,6 @@ footer { background: var(--primary-dark); color: rgba(255,255,255,0.8); padding:
   /* Modal: fullscreen feel */
   .modal-overlay { padding: 0; align-items: flex-end; }
   .modal { border-radius: 20px 20px 0 0; max-width: 100%; }
-
-  /* Carousel arrows hide on very small */
-  .carousel-prev, .carousel-next { display: none; }
 }
 
 /* ── SMALL PHONE (≤ 380px) ── */
@@ -784,9 +807,9 @@ footer { background: var(--primary-dark); color: rgba(255,255,255,0.8); padding:
 
 /* ── LANDSCAPE PHONES ── */
 @media (max-width: 768px) and (orientation: landscape) {
-  .hero { height: clamp(220px, 50vw, 320px); }
-  .slide-title { font-size: clamp(20px, 4vw, 30px); }
-  .slide-subtitle { display: none; }
+  .hero { height: clamp(280px, 80vw, 500px); min-height: 280px; }
+  .slide-title { font-size: clamp(22px, 4vw, 34px); }
+  .slide-subtitle { font-size: 13px; margin-bottom: 16px; }
   .modal-overlay { align-items: center; padding: 16px; }
   .modal { border-radius: 16px; max-height: 90vh; overflow-y: auto; }
 }
@@ -839,27 +862,28 @@ footer { background: var(--primary-dark); color: rgba(255,255,255,0.8); padding:
       </button>
     </div>
 
-    <!-- Mobile hamburger -->
+    <!-- Mobile hamburger (visible ≤768px) -->
     <button class="nav-menu-btn" id="menuBtn" onclick="toggleMobileMenu()" aria-label="Menu">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    <button class="cart-btn" id="mobileCartBtn" style="display:none;" onclick="openCart()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-      Cart
-      <span class="cart-count" id="mobileCartCount">0</span>
-    </button>
   </div>
 
-  <!-- Mobile action drawer -->
+  <!-- Mobile action drawer — includes Call, WhatsApp AND Cart -->
   <div class="nav-mobile-actions" id="mobileActions">
     <a href="tel:+918448879897" class="nav-btn btn-call" style="flex:1;justify-content:center;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.6 3.36a2 2 0 0 1 1.95-2.15h3a2 2 0 0 1 2 1.72c.13 1 .37 1.98.71 2.93a2 2 0 0 1-.45 2.11L7.91 9.06A16 16 0 0 0 14.06 15l.9-.9a2 2 0 0 1 2.11-.45c.95.34 1.93.58 2.93.71A2 2 0 0 1 22 16.92z"/></svg>
       Call Us
     </a>
-    <a href="https://wa.me/918448879897?text=Hi" target="_blank" class="nav-btn btn-wa" style="flex:1;justify-content:center;">
+    <a href="https://wa.me/918448879897" target="_blank" class="nav-btn btn-wa" style="flex:1;justify-content:center;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       WhatsApp
     </a>
+    <!-- Cart button inside drawer — visible only when menu is open on mobile -->
+    <button class="cart-btn mobile-drawer-cart" onclick="toggleMobileMenu(); openCart();" style="flex:1;justify-content:center;position:relative;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      Cart
+      <span class="cart-count" id="mobileCartCount" style="position:absolute;top:-6px;right:-6px;">0</span>
+    </button>
   </div>
 </nav>
 
@@ -1123,7 +1147,7 @@ footer { background: var(--primary-dark); color: rgba(255,255,255,0.8); padding:
   <a href="tel:+918448879897" class="float-btn float-call" title="Call Us">
     <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.6 3.36a2 2 0 0 1 1.95-2.15h3a2 2 0 0 1 2 1.72c.13 1 .37 1.98.71 2.93a2 2 0 0 1-.45 2.11L7.91 9.06A16 16 0 0 0 14.06 15l.9-.9a2 2 0 0 1 2.11-.45c.95.34 1.93.58 2.93.71A2 2 0 0 1 22 16.92z"/></svg>
   </a>
-  <a href="https://wa.me/918448879897" target="_blank" class="float-btn float-wa" title="WhatsApp">
+  <a href="https://wa.me/918448879897?text=Hi" target="_blank" class="float-btn float-wa" title="WhatsApp">
     <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </a>
 </div>
@@ -1190,32 +1214,44 @@ let carouselTimer;
 let mobileMenuOpen = false;
 
 // ── RESPONSIVE HELPERS ──
-function isMobile() { return window.innerWidth <= 768; }
-
-function syncMobileCartBtn() {
-  const desktopCartBtn = document.querySelector('.nav-actions .cart-btn');
-  const mobileCartBtn = document.getElementById('mobileCartBtn');
-  if (isMobile()) {
-    if (desktopCartBtn) desktopCartBtn.style.display = 'none';
-    if (mobileCartBtn) mobileCartBtn.style.display = 'flex';
-  } else {
-    if (desktopCartBtn) desktopCartBtn.style.display = 'flex';
-    if (mobileCartBtn) mobileCartBtn.style.display = 'none';
+function syncMenuCartDot() {
+  const total = cart.path.length + cart.centre.length;
+  // Hamburger dot indicator
+  let dot = document.querySelector('#menuBtn .menu-cart-dot');
+  if (!dot) {
+    dot = document.createElement('span');
+    dot.className = 'menu-cart-dot';
+    const btn = document.getElementById('menuBtn');
+    if (btn) btn.appendChild(dot);
+  }
+  dot.textContent = total > 9 ? '9+' : total;
+  dot.classList.toggle('visible', total > 0);
+  // Drawer cart badge
+  const drawerCount = document.getElementById('mobileCartCount');
+  if (drawerCount) {
+    drawerCount.textContent = total;
+    drawerCount.style.display = total > 0 ? 'flex' : 'none';
   }
 }
-window.addEventListener('resize', syncMobileCartBtn);
-syncMobileCartBtn();
 
 // ── MOBILE MENU ──
 function toggleMobileMenu() {
   mobileMenuOpen = !mobileMenuOpen;
   const drawer = document.getElementById('mobileActions');
+  const btn = document.getElementById('menuBtn');
   drawer.classList.toggle('open', mobileMenuOpen);
+  btn.innerHTML = mobileMenuOpen
+    ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
+    : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
+  // Re-add the cart dot after innerHTML replacement
+  syncMenuCartDot();
 }
 document.addEventListener('click', function(e) {
   if (mobileMenuOpen && !e.target.closest('#mobileActions') && !e.target.closest('#menuBtn')) {
     mobileMenuOpen = false;
     document.getElementById('mobileActions').classList.remove('open');
+    document.getElementById('menuBtn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
+    syncMenuCartDot();
   }
 });
 
@@ -1596,10 +1632,11 @@ function changeGroupLab(type, labName) {
 }
 function updateCartCount() {
   const total = cart.path.length + cart.centre.length;
-  ['cartCount','mobileCartCount'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.textContent = total; el.style.display = total > 0 ? 'flex' : 'none'; }
-  });
+  // Desktop cart badge
+  const el = document.getElementById('cartCount');
+  if (el) { el.textContent = total; el.style.display = total > 0 ? 'flex' : 'none'; }
+  // Mobile hamburger dot + drawer badge
+  syncMenuCartDot();
 }
 function openCart() { document.getElementById('cartModal').classList.add('active'); renderCartBody(); }
 function closeCart() { document.getElementById('cartModal').classList.remove('active'); }
@@ -1844,7 +1881,12 @@ window.addEventListener('keydown', e => {
     if (currentLocation) closeLocationModal();
     closeCart();
     searchDropdown.classList.remove('active');
-    if (mobileMenuOpen) { mobileMenuOpen = false; document.getElementById('mobileActions').classList.remove('open'); }
+    if (mobileMenuOpen) {
+      mobileMenuOpen = false;
+      document.getElementById('mobileActions').classList.remove('open');
+      document.getElementById('menuBtn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
+      syncMenuCartDot();
+    }
   }
 });
 </script>
